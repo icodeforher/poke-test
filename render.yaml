@@ -22,4 +22,3 @@ services:
         value: false
       - key: CORS_ORIGINS
         value: "*"
-
