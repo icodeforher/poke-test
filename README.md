@@ -5,6 +5,7 @@ A modern full-stack Pokemon application with FastAPI backend and Next.js fronten
 ## 📁 Project Structure
 
 This is a monorepo containing:
+
 - **Backend**: FastAPI REST API with JWT authentication
 - **Frontend**: Next.js 14 app with TypeScript and Tailwind CSS
 
