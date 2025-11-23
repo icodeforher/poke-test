@@ -25,7 +25,14 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # CORS
-    CORS_ORIGINS: list[str] = ["*"]
+    CORS_ORIGINS: str = "*"
+    
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Convert CORS_ORIGINS string to list"""
+        if self.CORS_ORIGINS == "*":
+            return ["*"]
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
     
     # Application
     APP_NAME: str = "Pokemon API Backend"

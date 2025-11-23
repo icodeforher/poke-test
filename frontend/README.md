@@ -27,37 +27,43 @@ Modern Pokemon browsing application built with Next.js 14, TypeScript, and Tailw
 ## 📦 Installation
 
 1. **Install dependencies**:
+
 ```bash
 npm install
 ```
 
 2. **Configure environment variables**:
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 Edit `.env.local`:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 3. **Generate TypeScript types from backend** (backend must be running):
+
 ```bash
 npm run generate:types
 ```
 
 4. **Run development server**:
+
 ```bash
 npm run dev
 ```
 
 Or generate types and start dev server in one command:
+
 ```bash
 npm run dev:with-types
 ```
 
 5. **Open browser**:
-Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🏗️ Project Structure
 
@@ -112,6 +118,7 @@ frontend/
 ## 🔑 Features Details
 
 ### Authentication
+
 - Login with username/password (admin/admin)
 - JWT token stored in localStorage
 - Automatic token injection in API requests
@@ -119,6 +126,7 @@ frontend/
 - Token expiration handling
 
 ### Pokemon List
+
 - Paginated list (20 per page)
 - Real-time search by name or number
 - Sort by:
@@ -128,6 +136,7 @@ frontend/
 - Loading skeletons
 
 ### Pokemon Detail
+
 - High-quality official artwork
 - Type badges with colors
 - Physical stats (height, weight, base XP)
@@ -140,6 +149,7 @@ frontend/
 ## 🎨 Styling Approach
 
 The app uses **basic functional styling** with Tailwind CSS:
+
 - Clean, minimal design
 - Focus on functionality over aesthetics
 - Responsive breakpoints
@@ -159,11 +169,13 @@ The app uses **basic functional styling** with Tailwind CSS:
 ### Environment Variables
 
 **Development**:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 **Production**:
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 ```
@@ -171,6 +183,7 @@ NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 ## 📱 Responsive Design
 
 Breakpoints:
+
 - **Mobile**: < 640px (2 columns)
 - **Tablet**: 640px - 1024px (3-4 columns)
 - **Desktop**: > 1024px (5 columns)
@@ -199,11 +212,11 @@ Breakpoints:
 The frontend uses **auto-generated TypeScript types** from the backend's OpenAPI schema:
 
 ```typescript
-import { apiClient } from '@/lib/api/client-typed';
+import { apiClient } from "@/lib/api/client-typed";
 
 // Fully typed requests and responses
-const { data, error } = await apiClient.GET('/pokemons', {
-  params: { query: { offset: 0, limit: 20 } }
+const { data, error } = await apiClient.GET("/pokemons", {
+  params: { query: { offset: 0, limit: 20 } },
 });
 ```
 
@@ -224,6 +237,7 @@ const { data, isLoading, error } = usePokemonList(offset, limit);
 ```
 
 **Benefits:**
+
 - Automatic caching
 - Background refetching
 - Optimistic updates
@@ -248,4 +262,3 @@ MIT
 ## 🤝 Contributing
 
 Feel free to submit issues and enhancement requests!
-

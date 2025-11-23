@@ -16,7 +16,7 @@ export interface PokemonSprites {
   front_female?: string;
   back_default?: string;
   other?: {
-    'official-artwork'?: {
+    "official-artwork"?: {
       front_default: string;
     };
     dream_world?: {
@@ -77,5 +77,8 @@ export interface Pokemon {
   forms: PokemonForm[];
 }
 
-export type SortOption = 'name-asc' | 'name-desc' | 'number-asc' | 'number-desc';
-
+export type SortOption =
+  | "name-asc"
+  | "name-desc"
+  | "number-asc"
+  | "number-desc";
