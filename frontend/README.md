@@ -18,8 +18,9 @@ Modern Pokemon browsing application built with Next.js 14, TypeScript, and Tailw
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **State Management**: Zustand
-- **HTTP Client**: Axios
+- **State Management**: Zustand + React Query (TanStack Query)
+- **HTTP Client**: openapi-fetch (type-safe)
+- **Type Generation**: openapi-typescript (auto-generated from backend)
 - **Form Validation**: React Hook Form + Zod
 - **Icons**: Lucide React
 
@@ -40,12 +41,22 @@ Edit `.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-3. **Run development server**:
+3. **Generate TypeScript types from backend** (backend must be running):
+```bash
+npm run generate:types
+```
+
+4. **Run development server**:
 ```bash
 npm run dev
 ```
 
-4. **Open browser**:
+Or generate types and start dev server in one command:
+```bash
+npm run dev:with-types
+```
+
+5. **Open browser**:
 Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🏗️ Project Structure
@@ -74,17 +85,24 @@ frontend/
 │       └── Navbar.tsx        # Navigation bar
 ├── lib/
 │   ├── api/
-│   │   ├── client.ts         # Axios configuration
+│   │   ├── client-typed.ts   # Type-safe openapi-fetch client
+│   │   ├── client.ts         # Legacy Axios client
 │   │   ├── auth.ts           # Auth API endpoints
 │   │   └── pokemon.ts        # Pokemon API endpoints
 │   ├── hooks/
-│   │   └── useAuth.ts        # Auth hook
+│   │   ├── queries/          # React Query hooks
+│   │   │   ├── useAuth.ts   # Auth mutations
+│   │   │   └── usePokemon.ts # Pokemon queries
+│   │   └── useAuth.ts        # Legacy auth hook
+│   ├── providers/
+│   │   └── ReactQueryProvider.tsx # React Query setup
 │   ├── store/
 │   │   └── authStore.ts      # Zustand auth store
 │   └── utils/
 │       ├── storage.ts        # localStorage utilities
 │       └── pokemon.ts        # Pokemon utilities
 ├── types/
+│   ├── api.ts                # 🎯 AUTO-GENERATED from OpenAPI
 │   ├── auth.ts               # Auth types
 │   └── pokemon.ts            # Pokemon types
 └── middleware.ts             # Route protection
@@ -168,19 +186,49 @@ Breakpoints:
 ## 📝 Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run dev:with-types` - Generate types + start dev server
+- `npm run build` - Generate types + build for production
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run generate:types` - Generate TypeScript types from backend OpenAPI schema
 
 ## 🔄 API Integration
 
-The frontend connects to the FastAPI backend:
+### Type-Safe API Client
+
+The frontend uses **auto-generated TypeScript types** from the backend's OpenAPI schema:
+
+```typescript
+import { apiClient } from '@/lib/api/client-typed';
+
+// Fully typed requests and responses
+const { data, error } = await apiClient.GET('/pokemons', {
+  params: { query: { offset: 0, limit: 20 } }
+});
+```
+
+### Endpoints
 
 - **POST** `/login` - User authentication
 - **GET** `/pokemons` - Get paginated Pokemon list
 - **GET** `/pokemons/{id}` - Get Pokemon details
 
 All protected endpoints require `Authorization: Bearer <token>` header.
+
+### React Query Integration
+
+Data fetching is managed by React Query (TanStack Query):
+
+```typescript
+const { data, isLoading, error } = usePokemonList(offset, limit);
+```
+
+**Benefits:**
+- Automatic caching
+- Background refetching
+- Optimistic updates
+- Loading and error states
+- DevTools included
 
 ## 🐛 Known Issues / Future Improvements
 

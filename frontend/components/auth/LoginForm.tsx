@@ -3,8 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuth } from '@/lib/hooks/useAuth';
-import { useEffect } from 'react';
+import { useLogin } from '@/lib/hooks/queries/useAuth';
 
 const loginSchema = z.object({
   username: z.string()
@@ -18,7 +17,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const { login, isLoading, error, clearError } = useAuth();
+  const { mutate: login, isPending, error } = useLogin();
   
   const {
     register,
@@ -32,16 +31,8 @@ export default function LoginForm() {
     },
   });
 
-  useEffect(() => {
-    // Clear error when component unmounts
-    return () => {
-      clearError();
-    };
-  }, [clearError]);
-
-  const onSubmit = async (data: LoginFormData) => {
-    clearError();
-    await login(data.username, data.password);
+  const onSubmit = (data: LoginFormData) => {
+    login(data);
   };
 
   return (
@@ -91,17 +82,17 @@ export default function LoginForm() {
         {/* Error Message */}
         {error && (
           <div className="p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded-md">
-            {error}
+            {error.message}
           </div>
         )}
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? (
+          {isPending ? (
             <span className="flex items-center">
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

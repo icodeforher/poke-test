@@ -1,10 +1,12 @@
 'use client';
 
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useLogout } from '@/lib/hooks/queries/useAuth';
+import { useAuthStore } from '@/lib/store/authStore';
 import { LogOut, User } from 'lucide-react';
 
 export default function Navbar() {
-  const { username, logout } = useAuth();
+  const { username } = useAuthStore();
+  const logout = useLogout();
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">

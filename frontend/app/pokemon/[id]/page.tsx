@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
-import { pokemonApi } from '@/lib/api/pokemon';
-import { Pokemon } from '@/types/pokemon';
+import { usePokemonDetail } from '@/lib/hooks/queries/usePokemon';
 import { storage } from '@/lib/utils/storage';
 import { formatPokemonName, getPokemonTypeColor } from '@/lib/utils/pokemon';
 import Navbar from '@/components/layout/Navbar';
@@ -15,10 +14,6 @@ export default function PokemonDetailPage() {
   const params = useParams();
   const id = params.id as string;
   
-  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   // Check authentication
   useEffect(() => {
     const token = storage.getToken();
@@ -27,28 +22,10 @@ export default function PokemonDetailPage() {
     }
   }, [router]);
 
-  // Fetch pokemon detail
-  useEffect(() => {
-    const fetchPokemon = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await pokemonApi.getPokemonDetail(id);
-        setPokemon(data);
-      } catch (err: any) {
-        setError(err.response?.data?.detail || 'Failed to fetch Pokemon details');
-        console.error('Error fetching pokemon:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch pokemon detail with React Query
+  const { data: pokemon, isLoading, error } = usePokemonDetail(id);
 
-    if (id) {
-      fetchPokemon();
-    }
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
@@ -69,7 +46,7 @@ export default function PokemonDetailPage() {
         <Navbar />
         <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <p className="text-red-800">{error || 'Pokemon not found'}</p>
+            <p className="text-red-800">{error?.message || 'Pokemon not found'}</p>
             <button
               onClick={() => router.push('/pokemon')}
               className="mt-4 text-blue-600 hover:underline"

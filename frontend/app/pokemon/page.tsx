@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { pokemonApi } from '@/lib/api/pokemon';
+import { usePokemonList } from '@/lib/hooks/queries/usePokemon';
 import { PokemonListItem, SortOption } from '@/types/pokemon';
 import { storage } from '@/lib/utils/storage';
 import { sortPokemonList, filterPokemonList } from '@/lib/utils/pokemon';
@@ -15,13 +15,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function PokemonListPage() {
   const router = useRouter();
-  const [pokemons, setPokemons] = useState<PokemonListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('number-asc');
   const [offset, setOffset] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
   const limit = 20;
 
   // Check authentication
@@ -32,25 +28,11 @@ export default function PokemonListPage() {
     }
   }, [router]);
 
-  // Fetch pokemons
-  useEffect(() => {
-    const fetchPokemons = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await pokemonApi.getPokemons(offset, limit);
-        setPokemons(response.results);
-        setTotalCount(response.count);
-      } catch (err: any) {
-        setError(err.response?.data?.detail || 'Failed to fetch Pokemon');
-        console.error('Error fetching pokemons:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch pokemons with React Query
+  const { data, isLoading, error } = usePokemonList(offset, limit);
 
-    fetchPokemons();
-  }, [offset]);
+  const pokemons = data?.results || [];
+  const totalCount = data?.count || 0;
 
   // Filter and sort pokemons
   const displayedPokemons = useMemo(() => {
@@ -105,19 +87,19 @@ export default function PokemonListPage() {
         {/* Error Message */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-800">{error}</p>
+            <p className="text-red-800">{error.message}</p>
           </div>
         )}
 
         {/* Pokemon Grid */}
-        {loading ? (
+        {isLoading ? (
           <LoadingSkeleton />
         ) : (
           <PokemonGrid pokemons={displayedPokemons} />
         )}
 
         {/* Pagination */}
-        {!loading && !searchQuery && (
+        {!isLoading && !searchQuery && (
           <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-6">
             <button
               onClick={handlePrevious}

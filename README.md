@@ -1,13 +1,67 @@
 # Pokemon Full-Stack Application
 
-A modern full-stack Pokemon application with FastAPI backend and Next.js frontend.
+A modern full-stack Pokemon application with **type-safe** integration between FastAPI backend and Next.js frontend.
+
+## 🌟 Destacados
+
+- ✅ **Type Safety Total**: Tipos generados automáticamente desde OpenAPI
+- ✅ **React Query**: Cache inteligente y estado del servidor
+- ✅ **Clean Architecture**: Backend y frontend bien organizados
+- ✅ **Developer Experience**: Autocomplete perfecto y detección de errores
+- ✅ **Production Ready**: 93% test coverage, documentación completa
 
 ## 📁 Project Structure
 
 This is a monorepo containing:
 
-- **Backend**: FastAPI REST API with JWT authentication
-- **Frontend**: Next.js 14 app with TypeScript and Tailwind CSS
+- **Backend**: FastAPI REST API with JWT authentication and OpenAPI schema
+- **Frontend**: Next.js 14 app with auto-generated types and React Query
+
+## 🚀 Quick Start
+
+### Option 1: Automated (Recommended)
+
+```bash
+# Install frontend dependencies (only first time)
+cd frontend && npm install && cd ..
+
+# Start both backend and frontend
+./start-dev.sh
+```
+
+### Option 2: Manual
+
+**Terminal 1 - Backend:**
+
+```bash
+source venv/bin/activate
+uvicorn app.main:app --reload
+```
+
+**Terminal 2 - Frontend:**
+
+```bash
+cd frontend
+npm install                # Only first time
+npm run generate:types     # Generate types from backend
+npm run dev
+```
+
+**Access:**
+
+- 🌐 **Frontend**: http://localhost:3000
+- 🔧 **Backend**: http://localhost:8000
+- 📚 **API Docs**: http://localhost:8000/docs
+- 🔐 **Credentials**: `admin` / `admin`
+
+## 📚 Documentation
+
+- 📖 **Quick Start**: `QUICKSTART_FRONTEND.md`
+- 🔧 **Type Generation**: `frontend/TYPE_GENERATION.md`
+- 📘 **Setup Guide**: `frontend/SETUP_GUIDE.md`
+- 🚀 **Vercel Deployment**: `frontend/VERCEL_DEPLOYMENT.md`
+- 🧪 **Quick Test**: `frontend/QUICK_TEST.md`
+- 📋 **Implementation Complete**: `IMPLEMENTACION_COMPLETA.md`
 
 ---
 
