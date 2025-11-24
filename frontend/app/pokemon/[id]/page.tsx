@@ -6,15 +6,13 @@ import Image from "next/image";
 import { usePokemonDetail } from "@/lib/hooks/queries/usePokemon";
 import { storage } from "@/lib/utils/storage";
 import { formatPokemonName, getPokemonTypeColor } from "@/lib/utils/pokemon";
-import Navbar from "@/components/layout/Navbar";
-import { ArrowLeft, Weight, Ruler, Zap } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default function PokemonDetailPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
-  // Check authentication
   useEffect(() => {
     const token = storage.getToken();
     if (!token) {
@@ -22,41 +20,36 @@ export default function PokemonDetailPage() {
     }
   }, [router]);
 
-  // Fetch pokemon detail with React Query
   const { data: pokemon, isLoading, error } = usePokemonDetail(id);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-64 bg-gray-200 rounded"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
+      <div className="min-h-screen bg-gray-background">
+        <div className="animate-pulse">
+          <div className="h-64 bg-gray-medium"></div>
+          <div className="px-4 py-6 space-y-4">
+            <div className="h-8 bg-gray-light rounded w-1/2"></div>
+            <div className="h-32 bg-gray-light rounded"></div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (error || !pokemon) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <p className="text-red-800">
-              {error?.message || "Pokemon not found"}
-            </p>
-            <button
-              onClick={() => router.push("/pokemon")}
-              className="mt-4 text-blue-600 hover:underline"
-            >
-              Back to list
-            </button>
-          </div>
-        </main>
+      <div className="min-h-screen bg-gray-background flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <p className="text-body-1 text-red-600 mb-4">
+            {error?.message || "Pokemon not found"}
+          </p>
+          <button
+            onClick={() => router.push("/pokemon")}
+            className="w-full bg-pokemon-red text-white py-2 rounded-lg text-subtitle-2"
+          >
+            Back to list
+          </button>
+        </div>
       </div>
     );
   }
@@ -65,194 +58,153 @@ export default function PokemonDetailPage() {
     pokemon?.sprites?.other?.["official-artwork"]?.front_default ||
     pokemon?.sprites.front_default;
 
+  const primaryType = pokemon.types[0]?.type.name || 'normal';
+  const typeColor = getPokemonTypeColor(primaryType);
+
+  const statNameMap: { [key: string]: string } = {
+    'hp': 'HP',
+    'attack': 'ATK',
+    'defense': 'DEF',
+    'special-attack': 'SATK',
+    'special-defense': 'SDEF',
+    'speed': 'SPD'
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: typeColor }}>
+      <div className="absolute top-2 right-2 opacity-10 z-0">
+        <Image 
+          src="/images/pokeball.svg" 
+          alt="Pokeball" 
+          width={200} 
+          height={200}
+          className="invert"
+        />
+      </div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <button
-          onClick={() => router.push("/pokemon")}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          Back to list
-        </button>
-
-        {/* Pokemon Header */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Image */}
-            <div className="flex items-center justify-center">
-              <div className="relative w-full h-80">
-                <Image
-                  src={spriteUrl}
-                  alt={pokemon.name}
-                  fill
-                  className="object-contain"
-                  unoptimized
-                />
-              </div>
+      <div className="relative px-4 pt-4">
+        <div className="max-w-md mx-auto relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => router.push("/pokemon")}
+                className="text-white"
+              >
+                <ArrowLeft className="w-8 h-8" />
+              </button>
+              <h1 className="text-headline text-white font-bold capitalize">
+                {formatPokemonName(pokemon.name)}
+              </h1>
             </div>
+            <span className="text-subtitle-1 text-white font-bold">
+              #{pokemon.id.toString().padStart(3, "0")}
+            </span>
+          </div>
 
-            {/* Basic Info */}
-            <div>
-              <div className="mb-4">
-                <p className="text-gray-500 text-lg font-semibold">
-                  #{pokemon.id.toString().padStart(3, "0")}
-                </p>
-                <h1 className="text-4xl font-bold text-gray-900 mt-2">
-                  {formatPokemonName(pokemon.name)}
-                </h1>
-              </div>
-
-              {/* Types */}
-              <div className="mb-6">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Types
-                </h3>
-                <div className="flex gap-2">
-                  {pokemon.types.map((type) => (
-                    <span
-                      key={type.slot}
-                      className="px-4 py-1 rounded-full text-white text-sm font-medium"
-                      style={{
-                        backgroundColor: getPokemonTypeColor(type.type.name),
-                      }}
-                    >
-                      {formatPokemonName(type.type.name)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Physical Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <Weight className="h-4 w-4" />
-                    <span className="text-xs font-medium">Weight</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">
-                    {pokemon.weight / 10} kg
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <Ruler className="h-4 w-4" />
-                    <span className="text-xs font-medium">Height</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">
-                    {pokemon.height / 10} m
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-gray-600 mb-1">
-                    <Zap className="h-4 w-4" />
-                    <span className="text-xs font-medium">Base XP</span>
-                  </div>
-                  <p className="text-lg font-bold text-gray-900">
-                    {pokemon.base_experience || "N/A"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
-                  Base Stats
-                </h3>
-                <div className="space-y-2">
-                  {pokemon.stats.map((stat) => (
-                    <div key={stat.stat.name}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="text-gray-600 capitalize">
-                          {stat.stat.name.replace("-", " ")}
-                        </span>
-                        <span className="font-semibold text-gray-900">
-                          {stat.base_stat}
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 h-2 rounded-full"
-                          style={{
-                            width: `${Math.min(
-                              (stat.base_stat / 255) * 100,
-                              100
-                            )}%`,
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="relative w-full flex justify-center mb-2">
+            <Image
+              src={spriteUrl}
+              alt={pokemon.name}
+              width={200}
+              height={200}
+              className="object-contain relative z-10"
+              unoptimized
+            />
           </div>
         </div>
+      </div>
 
-        {/* Abilities */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Abilities</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {pokemon.abilities.map((ability) => (
-              <div
-                key={ability.slot}
-                className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+      <div className="flex-1 relative z-10">
+        <div className="bg-white rounded-t-3xl shadow-drop-6 min-h-full">
+          <div className="max-w-md mx-auto px-6 pt-12 pb-8">
+            <div className="flex justify-center gap-2 mb-8">
+            {pokemon.types.map((type) => (
+              <span
+                key={type.slot}
+                className="px-4 py-1 rounded-full text-white text-subtitle-2 font-bold capitalize"
+                style={{
+                  backgroundColor: getPokemonTypeColor(type.type.name),
+                }}
               >
-                <p className="font-medium text-gray-900 capitalize">
-                  {ability.ability.name.replace("-", " ")}
-                </p>
-                {ability.is_hidden && (
-                  <span className="text-xs text-blue-600 font-medium">
-                    Hidden Ability
-                  </span>
-                )}
-              </div>
+                {type.type.name}
+              </span>
             ))}
           </div>
-        </div>
 
-        {/* Moves */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Moves ({pokemon.moves.length})
+          <h2 className="text-subtitle-1 font-bold text-center mb-4" style={{ color: typeColor }}>
+            About
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-96 overflow-y-auto">
-            {pokemon.moves.slice(0, 50).map((move) => (
-              <div
-                key={move.move.name}
-                className="bg-gray-50 rounded px-3 py-2 text-sm text-gray-700 capitalize border border-gray-200"
-              >
-                {move.move.name.replace("-", " ")}
+
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="text-center">
+              <Image 
+                src="/images/weight.svg" 
+                alt="Weight" 
+                width={16} 
+                height={16} 
+                className="mx-auto mb-2"
+              />
+              <p className="text-body-3 text-gray-dark mb-1">
+                {pokemon.weight / 10} kg
+              </p>
+              <p className="text-caption text-gray-medium">Weight</p>
+            </div>
+            <div className="text-center border-x border-gray-light">
+              <Image 
+                src="/images/straighten.svg" 
+                alt="Height" 
+                width={16} 
+                height={16} 
+                className="mx-auto mb-2"
+              />
+              <p className="text-body-3 text-gray-dark mb-1">
+                {pokemon.height / 10} m
+              </p>
+              <p className="text-caption text-gray-medium">Height</p>
+            </div>
+            <div className="text-center">
+              <p className="text-body-3 text-gray-dark mb-1 capitalize">
+                {pokemon.abilities.slice(0, 2).map(a => a.ability.name.replace('-', ' ')).join('\n')}
+              </p>
+              <p className="text-caption text-gray-medium">Moves</p>
+            </div>
+          </div>
+
+          <p className="text-body-3 text-gray-dark text-center mb-8">
+            There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger.
+          </p>
+
+          <h2 className="text-subtitle-1 font-bold text-center mb-4" style={{ color: typeColor }}>
+            Base Stats
+          </h2>
+
+          <div className="space-y-3">
+            {pokemon.stats.map((stat) => (
+              <div key={stat.stat.name} className="flex items-center gap-2">
+                <span 
+                  className="text-subtitle-3 font-bold w-12 text-right"
+                  style={{ color: typeColor }}
+                >
+                  {statNameMap[stat.stat.name] || stat.stat.name.toUpperCase()}
+                </span>
+                <span className="text-body-3 text-gray-dark w-8 text-center">
+                  {stat.base_stat.toString().padStart(3, '0')}
+                </span>
+                <div className="flex-1 h-1 bg-gray-light rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      backgroundColor: typeColor,
+                      width: `${Math.min((stat.base_stat / 255) * 100, 100)}%`,
+                    }}
+                  ></div>
+                </div>
               </div>
             ))}
           </div>
-          {pokemon.moves.length > 50 && (
-            <p className="text-sm text-gray-500 mt-3">Showing first 50 moves</p>
-          )}
-        </div>
-
-        {/* Forms */}
-        {pokemon.forms.length > 0 && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Forms</h2>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {pokemon.forms.map((form) => (
-                <div
-                  key={form.name}
-                  className="bg-gray-50 rounded-lg p-4 border border-gray-200"
-                >
-                  <p className="font-medium text-gray-900 capitalize">
-                    {form.name.replace("-", " ")}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
-        )}
-      </main>
+        </div>
+      </div>
     </div>
   );
 }

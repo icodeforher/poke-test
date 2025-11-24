@@ -3,8 +3,7 @@ import "./globals.css";
 import ReactQueryProvider from "@/lib/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
-  title: "Pokemon App",
-  description: "Browse and explore Pokemon from the Pokemon API",
+  title: "Pokédex",
 };
 
 export default function RootLayout({
@@ -14,12 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <ReactQueryProvider>
-          {children}
-        </ReactQueryProvider>
+      <body className="bg-gray-background">
+        <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
   );
 }
-

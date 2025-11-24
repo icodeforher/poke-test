@@ -4,9 +4,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { storage } from '@/lib/utils/storage';
 
-/**
- * Root page - redirects to login or pokemon list
- */
 export default function HomePage() {
   const router = useRouter();
 

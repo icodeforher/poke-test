@@ -33,18 +33,18 @@ Can you help me implement this step by step? Start with the basic structure.
 ## Follow-up Prompts
 
 ```
-I see the SECRET_KEY is hardcoded. That's not secure. Can you move all secrets 
+I see the SECRET_KEY is hardcoded. That's not secure. Can you move all secrets
 to environment variables? I want to follow best practices for this assessment.
 ```
 
 ```
-Everything is in one file, that's not scalable. The assessment will evaluate 
-architecture. Can you restructure this following Clean Architecture with proper 
+Everything is in one file, that's not scalable. The assessment will evaluate
+architecture. Can you restructure this following Clean Architecture with proper
 layers? They mentioned separation of concerns specifically.
 ```
 
 ```
-Can you add comprehensive tests? The requirements mention TDD is preferable. 
+Can you add comprehensive tests? The requirements mention TDD is preferable.
 I need good coverage to show I understand testing practices.
 ```
 
@@ -57,12 +57,12 @@ Can you set this up as local config only?
 ```
 
 ```
-The build is failing on Render with some Rust compilation errors for pydantic. 
+The build is failing on Render with some Rust compilation errors for pydantic.
 It's using Python 3.13. Can you fix the dependencies to work properly?
 ```
 
 ```
-I'm adding a frontend in another chat. Can you help me convert this to a 
+I'm adding a frontend in another chat. Can you help me convert this to a
 monorepo? I want:
 - Everything in a backend/ folder
 - Frontend will go in frontend/ folder
@@ -70,7 +70,7 @@ monorepo? I want:
 ```
 
 ```
-My frontend will be deployed on Vercel. Can you configure CORS properly to 
+My frontend will be deployed on Vercel. Can you configure CORS properly to
 allow requests from Vercel domains and localhost during development?
 ```
 
