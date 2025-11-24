@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
 const nextConfig = {
   images: {
     domains: ['raw.githubusercontent.com', 'assets.pokemon.com'],
@@ -11,11 +10,7 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config) => {
-    config.resolve.alias['@'] = path.resolve(__dirname);
-    return config;
-  },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
 
