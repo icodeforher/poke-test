@@ -1,5 +1,7 @@
 # Pokemon Full-Stack Application
 
+PUBLIC WEB SITE: https://poke-test-pfji.vercel.app/pokemon
+
 A modern full-stack Pokemon application with **type-safe** integration between FastAPI backend and Next.js frontend.
 
 ## 🌟 Features
@@ -87,6 +89,7 @@ See `docs/README_DEPLOY.md` for deployment instructions.
 ## 🛠 Tech Stack
 
 **Frontend:**
+
 - Next.js 14
 - React Query
 - TypeScript
@@ -94,6 +97,7 @@ See `docs/README_DEPLOY.md` for deployment instructions.
 - Zustand (State Management)
 
 **Backend:**
+
 - FastAPI
 - Python 3.9+
 - JWT Authentication
@@ -113,6 +117,7 @@ npm test
 ## 📝 Environment Variables
 
 **Backend** (`backend/.env`):
+
 ```env
 SECRET_KEY=your-secret-key
 ALGORITHM=HS256
@@ -121,6 +126,7 @@ POKEAPI_BASE_URL=https://pokeapi.co/api/v2
 ```
 
 **Frontend** (`.env.local`):
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
